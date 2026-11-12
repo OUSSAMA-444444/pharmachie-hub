@@ -1,0 +1,85 @@
+{
+  "modele_recommande_avant_test": "svm",
+  "modeles": {
+    "random_forest": {
+      "metriques": {
+        "accuracy": 0.915,
+        "precision": 0.9058823529411765,
+        "recall": 0.6416666666666667,
+        "f1": 0.751219512195122,
+        "roc_auc": 0.9132118055555556,
+        "pr_auc_ap": 0.851076940937709,
+        "vrais_negatifs": 472,
+        "faux_positifs": 8,
+        "faux_negatifs": 43,
+        "vrais_positifs": 77
+      },
+      "matrice_confusion": [
+        [
+          472,
+          8
+        ],
+        [
+          43,
+          77
+        ]
+      ],
+      "type_score": "probabilite_non_calibree",
+      "seuil": 0.5
+    },
+    "xgboost": {
+      "metriques": {
+        "accuracy": 0.915,
+        "precision": 0.896551724137931,
+        "recall": 0.65,
+        "f1": 0.7536231884057971,
+        "roc_auc": 0.921875,
+        "pr_auc_ap": 0.839180272297947,
+        "vrais_negatifs": 471,
+        "faux_positifs": 9,
+        "faux_negatifs": 42,
+        "vrais_positifs": 78
+      },
+      "matrice_confusion": [
+        [
+          471,
+          9
+        ],
+        [
+          42,
+          78
+        ]
+      ],
+      "type_score": "probabilite_non_calibree",
+      "seuil": 0.5
+    },
+    "svm": {
+      "metriques": {
+        "accuracy": 0.9133333333333333,
+        "precision": 0.9146341463414634,
+        "recall": 0.625,
+        "f1": 0.7425742574257426,
+        "roc_auc": 0.9210590277777778,
+        "pr_auc_ap": 0.855969224356576,
+        "vrais_negatifs": 473,
+        "faux_positifs": 7,
+        "faux_negatifs": 45,
+        "vrais_positifs": 75
+      },
+      "matrice_confusion": [
+        [
+          473,
+          7
+        ],
+        [
+          45,
+          75
+        ]
+      ],
+      "type_score": "score_decision_non_probabiliste",
+      "seuil": 0.0
+    }
+  },
+  "sha256_test": "bdcc28b09b20caf672525242dceca59699840a95eb7d9e1f555acf735451d07b",
+  "permutation_svm": "exploratoire_apres_evaluation"
+}

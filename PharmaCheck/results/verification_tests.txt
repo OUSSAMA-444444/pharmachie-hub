@@ -1,0 +1,24 @@
+test_csv_validation (test_project.ProjectTests.test_csv_validation) ... ok
+test_imputation_scaling_do_not_learn_from_new_data (test_project.ProjectTests.test_imputation_scaling_do_not_learn_from_new_data) ... ok
+test_retraining_is_isolated_and_reloadable (test_project.ProjectTests.test_retraining_is_isolated_and_reloadable) ... 
+=== Random Forest ===
+F1 CV=0.3333; rappel=0.2619
+
+=== XGBoost ===
+F1 CV=0.3060; rappel=0.3016
+
+=== SVM (RBF) ===
+F1 CV=0.6932; rappel=0.7460
+Recommandation avant test : SVM (RBF)
+ok
+test_saved_artifacts_reproduce_metrics (test_project.ProjectTests.test_saved_artifacts_reproduce_metrics) ... ok
+test_selection_and_folds_are_training_only (test_project.ProjectTests.test_selection_and_folds_are_training_only) ... ok
+test_streamlit_navigation_demo_and_single_batch (test_project.ProjectTests.test_streamlit_navigation_demo_and_single_batch) ... 2026-11-12 22:32:19.814 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_training_blocks_original_test (test_project.ProjectTests.test_training_blocks_original_test) ... ok
+test_unlabelled_and_partial_labels (test_project.ProjectTests.test_unlabelled_and_partial_labels) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.311s
+
+OK

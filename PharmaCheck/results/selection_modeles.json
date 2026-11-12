@@ -1,0 +1,236 @@
+{
+  "date_execution_utc": "2026-11-12T22:25:00.302874+00:00",
+  "features": [
+    "force_compression_kN",
+    "humidite_granules_pct",
+    "poids_comprime_mg",
+    "durete_comprime_N",
+    "friabilite_pct",
+    "dissolution_30min_pct",
+    "teneur_principe_actif_pct",
+    "variabilite_teneur_rsd_pct"
+  ],
+  "target": "etiquette_anomalie",
+  "audit_train": {
+    "forme": [
+      2400,
+      11
+    ],
+    "colonnes_lues": [
+      "identifiant_lot",
+      "date_production",
+      "force_compression_kN",
+      "humidite_granules_pct",
+      "poids_comprime_mg",
+      "durete_comprime_N",
+      "friabilite_pct",
+      "dissolution_30min_pct",
+      "teneur_principe_actif_pct",
+      "variabilite_teneur_rsd_pct",
+      "etiquette_anomalie"
+    ],
+    "types_lus": {
+      "identifiant_lot": "object",
+      "date_production": "object",
+      "force_compression_kN": "float64",
+      "humidite_granules_pct": "float64",
+      "poids_comprime_mg": "float64",
+      "durete_comprime_N": "float64",
+      "friabilite_pct": "float64",
+      "dissolution_30min_pct": "float64",
+      "teneur_principe_actif_pct": "float64",
+      "variabilite_teneur_rsd_pct": "float64",
+      "etiquette_anomalie": "int64"
+    },
+    "valeurs_manquantes": {
+      "identifiant_lot": 0,
+      "date_production": 0,
+      "force_compression_kN": 0,
+      "humidite_granules_pct": 0,
+      "poids_comprime_mg": 0,
+      "durete_comprime_N": 0,
+      "friabilite_pct": 0,
+      "dissolution_30min_pct": 0,
+      "teneur_principe_actif_pct": 0,
+      "variabilite_teneur_rsd_pct": 0,
+      "etiquette_anomalie": 0
+    },
+    "lignes_dupliquees": 0,
+    "lignes_supprimees": 0,
+    "identifiants_generes": false,
+    "colonnes_ignorees": [],
+    "etiquettes_connues": 2400,
+    "classes": {
+      "0": 1920,
+      "1": 480
+    },
+    "fichier": "PharmaCheck_train_80.csv",
+    "sha256": "e2b43273e92e96fb8cc6e01c06d0b52ec710f60f191f58e55e5546396a97cdc8"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0",
+    "xgboost": "3.1.3",
+    "matplotlib": "3.10.8",
+    "seaborn": "0.13.2",
+    "joblib": "1.5.3",
+    "scipy": "1.17.0"
+  },
+  "random_state": 42,
+  "modeles": {
+    "random_forest": {
+      "hyperparametres": {
+        "classifier__class_weight": null,
+        "classifier__max_depth": null,
+        "classifier__min_samples_leaf": 3
+      },
+      "nombre_candidats": 12,
+      "baseline": {
+        "f1": 0.8194426189021936,
+        "recall": 0.7458333333333333,
+        "precision": 0.9110662405166391,
+        "accuracy": 0.9345833333333333,
+        "roc_auc": 0.9384467230902777,
+        "average_precision": 0.8912283353336037
+      },
+      "cv": {
+        "f1": {
+          "moyenne": 0.8236926557715908,
+          "ecart_type": 0.02591837412482635
+        },
+        "recall": {
+          "moyenne": 0.7479166666666667,
+          "ecart_type": 0.04340138886666594
+        },
+        "precision": {
+          "moyenne": 0.9186301225928627,
+          "ecart_type": 0.016037614998790747
+        },
+        "accuracy": {
+          "moyenne": 0.93625,
+          "ecart_type": 0.0077504480157242536
+        },
+        "roc_auc": {
+          "moyenne": 0.9426215277777779,
+          "ecart_type": 0.006541344543142863
+        },
+        "average_precision": {
+          "moyenne": 0.894019153997369,
+          "ecart_type": 0.012129461635731585
+        }
+      },
+      "seuil": 0.5
+    },
+    "xgboost": {
+      "hyperparametres": {
+        "classifier__learning_rate": 0.1,
+        "classifier__max_depth": 2,
+        "classifier__n_estimators": 400,
+        "classifier__scale_pos_weight": 1
+      },
+      "nombre_candidats": 24,
+      "baseline": {
+        "f1": 0.8239813254075445,
+        "recall": 0.7583333333333334,
+        "precision": 0.9036003183710809,
+        "accuracy": 0.9354166666666668,
+        "roc_auc": 0.9330512152777779,
+        "average_precision": 0.883209899544323
+      },
+      "cv": {
+        "f1": {
+          "moyenne": 0.8275192739341104,
+          "ecart_type": 0.02324533527263944
+        },
+        "recall": {
+          "moyenne": 0.75625,
+          "ecart_type": 0.033978138396458545
+        },
+        "precision": {
+          "moyenne": 0.9148840353236389,
+          "ecart_type": 0.02366535442823693
+        },
+        "accuracy": {
+          "moyenne": 0.9370833333333334,
+          "ecart_type": 0.007614861201040417
+        },
+        "roc_auc": {
+          "moyenne": 0.9348795572916668,
+          "ecart_type": 0.00891585458640471
+        },
+        "average_precision": {
+          "moyenne": 0.885611806821313,
+          "ecart_type": 0.019045012030254427
+        }
+      },
+      "seuil": 0.5
+    },
+    "svm": {
+      "hyperparametres": {
+        "classifier__C": 10,
+        "classifier__class_weight": null,
+        "classifier__gamma": 0.1
+      },
+      "nombre_candidats": 24,
+      "baseline": {
+        "f1": 0.8282531690395827,
+        "recall": 0.7312500000000001,
+        "precision": 0.957904239766082,
+        "accuracy": 0.9395833333333332,
+        "roc_auc": 0.9486382378472223,
+        "average_precision": 0.9106876381286668
+      },
+      "cv": {
+        "f1": {
+          "moyenne": 0.8285282207476223,
+          "ecart_type": 0.024244767667365448
+        },
+        "recall": {
+          "moyenne": 0.7479166666666666,
+          "ecart_type": 0.042898458920779176
+        },
+        "precision": {
+          "moyenne": 0.9317726105339844,
+          "ecart_type": 0.029082474973342168
+        },
+        "accuracy": {
+          "moyenne": 0.9383333333333332,
+          "ecart_type": 0.007168604389202163
+        },
+        "roc_auc": {
+          "moyenne": 0.942431640625,
+          "ecart_type": 0.011022503189040297
+        },
+        "average_precision": {
+          "moyenne": 0.9003275172256522,
+          "ecart_type": 0.015568893134044167
+        }
+      },
+      "seuil": 0.0
+    }
+  },
+  "sha256_modeles": {
+    "random_forest": "7f91ef583e9842c69769dbe22aae13ab5df476e0766891991bdb9c773d16398f",
+    "xgboost": "108233912816c28c62fc99c0d0e1af6004e532cb93e7e099498eddff4f63675f",
+    "svm": "1424d7b7f315cb66385ec92b62c9fe7e8ba778feccdec4d7303866b7b8463223"
+  },
+  "modele_recommande": "svm",
+  "selection_effectuee_sans_test": true,
+  "validation": {
+    "plis": 5,
+    "random_state": 42,
+    "shuffle": true,
+    "cv_imbriquee": false,
+    "mode": "complet",
+    "criteres": [
+      "f1_classe_1",
+      "rappel_classe_1"
+    ]
+  },
+  "sha256_sources_apprentissage": {
+    "train_models.py": "b035e441813bb94b90060250ce201ca7a8bf381949a32733c3b75898cc3b1b0f",
+    "pharmacheck_utils.py": "ea1d05509136f99ee97c5950ce6c22e099e54510d7ec5465c727b7600981fa38"
+  }
+}

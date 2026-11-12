@@ -1,0 +1,11 @@
+Apprentissage : (2400, 11); classes : {'0': 1920, '1': 480}; manquants : 0
+
+=== Random Forest ===
+F1 CV=0.8237; rappel=0.7479
+
+=== XGBoost ===
+F1 CV=0.8275; rappel=0.7562
+
+=== SVM (RBF) ===
+F1 CV=0.8285; rappel=0.7479
+Recommandation avant test : SVM (RBF)

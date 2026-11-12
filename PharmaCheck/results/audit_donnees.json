@@ -1,0 +1,118 @@
+{
+  "train": {
+    "forme": [
+      2400,
+      11
+    ],
+    "colonnes_lues": [
+      "identifiant_lot",
+      "date_production",
+      "force_compression_kN",
+      "humidite_granules_pct",
+      "poids_comprime_mg",
+      "durete_comprime_N",
+      "friabilite_pct",
+      "dissolution_30min_pct",
+      "teneur_principe_actif_pct",
+      "variabilite_teneur_rsd_pct",
+      "etiquette_anomalie"
+    ],
+    "types_lus": {
+      "identifiant_lot": "object",
+      "date_production": "object",
+      "force_compression_kN": "float64",
+      "humidite_granules_pct": "float64",
+      "poids_comprime_mg": "float64",
+      "durete_comprime_N": "float64",
+      "friabilite_pct": "float64",
+      "dissolution_30min_pct": "float64",
+      "teneur_principe_actif_pct": "float64",
+      "variabilite_teneur_rsd_pct": "float64",
+      "etiquette_anomalie": "int64"
+    },
+    "valeurs_manquantes": {
+      "identifiant_lot": 0,
+      "date_production": 0,
+      "force_compression_kN": 0,
+      "humidite_granules_pct": 0,
+      "poids_comprime_mg": 0,
+      "durete_comprime_N": 0,
+      "friabilite_pct": 0,
+      "dissolution_30min_pct": 0,
+      "teneur_principe_actif_pct": 0,
+      "variabilite_teneur_rsd_pct": 0,
+      "etiquette_anomalie": 0
+    },
+    "lignes_dupliquees": 0,
+    "lignes_supprimees": 0,
+    "identifiants_generes": false,
+    "colonnes_ignorees": [],
+    "etiquettes_connues": 2400,
+    "classes": {
+      "0": 1920,
+      "1": 480
+    },
+    "fichier": "PharmaCheck_train_80.csv",
+    "sha256": "e2b43273e92e96fb8cc6e01c06d0b52ec710f60f191f58e55e5546396a97cdc8"
+  },
+  "test": {
+    "forme": [
+      600,
+      11
+    ],
+    "colonnes_lues": [
+      "identifiant_lot",
+      "date_production",
+      "force_compression_kN",
+      "humidite_granules_pct",
+      "poids_comprime_mg",
+      "durete_comprime_N",
+      "friabilite_pct",
+      "dissolution_30min_pct",
+      "teneur_principe_actif_pct",
+      "variabilite_teneur_rsd_pct",
+      "etiquette_anomalie"
+    ],
+    "types_lus": {
+      "identifiant_lot": "object",
+      "date_production": "object",
+      "force_compression_kN": "float64",
+      "humidite_granules_pct": "float64",
+      "poids_comprime_mg": "float64",
+      "durete_comprime_N": "float64",
+      "friabilite_pct": "float64",
+      "dissolution_30min_pct": "float64",
+      "teneur_principe_actif_pct": "float64",
+      "variabilite_teneur_rsd_pct": "float64",
+      "etiquette_anomalie": "int64"
+    },
+    "valeurs_manquantes": {
+      "identifiant_lot": 0,
+      "date_production": 0,
+      "force_compression_kN": 0,
+      "humidite_granules_pct": 0,
+      "poids_comprime_mg": 0,
+      "durete_comprime_N": 0,
+      "friabilite_pct": 0,
+      "dissolution_30min_pct": 0,
+      "teneur_principe_actif_pct": 0,
+      "variabilite_teneur_rsd_pct": 0,
+      "etiquette_anomalie": 0
+    },
+    "lignes_dupliquees": 0,
+    "lignes_supprimees": 0,
+    "identifiants_generes": false,
+    "colonnes_ignorees": [],
+    "etiquettes_connues": 600,
+    "classes": {
+      "0": 480,
+      "1": 120
+    },
+    "fichier": "PharmaCheck_test_20.csv",
+    "sha256": "bdcc28b09b20caf672525242dceca59699840a95eb7d9e1f555acf735451d07b"
+  },
+  "separation": {
+    "identifiants": 0,
+    "mesures": 0
+  }
+}
