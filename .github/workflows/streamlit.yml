@@ -56,7 +56,7 @@ jobs:
           last_error = None
           while time.monotonic() < deadline:
               try:
-                  for path in ('/', '/_stcore/health'):
+                  for path in ('/', '/~/+/_stcore/health'):
                       request = urllib.request.Request(base + path, headers={'User-Agent': 'PharmaCheck-GitHub-Actions'})
                       with urllib.request.urlopen(request, timeout=20) as response:
                           content = response.read(1024).decode('utf-8', errors='replace')
