@@ -3,6 +3,7 @@ import io
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 from pathlib import Path
 import numpy as np
@@ -13,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pharmacheck_utils import ROOT, FEATURES, ID, TARGET, validate_batches, read_csv_bytes, read_json, file_hash
 from train_models import build_models, best_index
 from ui_backend import load_bundle, predict_batches, evaluate_predictions, prepare_training, train_experiment, zip_folder
+from analysis_history import delete_history, latest_history_deletion, record_analysis, read_history, history_csv, restore_history
 
 
 def fixture():
@@ -126,21 +128,136 @@ class ProjectTests(unittest.TestCase):
                 self.assertIsNone(z.testzip())
         self.assertEqual(before, {p: file_hash(p) for p in paths})
 
-    def test_streamlit_navigation_demo_and_single_batch(self):
+    def test_history_persistence_and_complete_csv(self):
+        models, meta = load_bundle(ROOT)
+        frame = fixture().iloc[:1].copy()
+        frame[ID] = "=LOT-001"
+        predictions = predict_batches(models, frame)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "history.sqlite3"
+            self.assertTrue(read_history(path).empty)
+            self.assertFalse(path.exists())
+            first = record_analysis(frame, predictions, meta["modele_recommande"], "version-test", path)
+            second = record_analysis(frame, predictions, meta["modele_recommande"], "version-test", path)
+            self.assertNotEqual(first, second)
+            history = read_history(path)
+            self.assertEqual(len(history), 2)
+            self.assertEqual(history.iloc[0].id_analyse, second)
+            self.assertTrue(history[ID].eq("=LOT-001").all())
+            exported = pd.read_csv(io.BytesIO(history_csv(history)))
+            self.assertTrue(exported[ID].eq("'=LOT-001").all())
+            self.assertTrue(exported.signature_modeles.eq("version-test").all())
+            self.assertEqual(len(exported.analyse_le_utc), 2)
+            for feature in FEATURES:
+                np.testing.assert_allclose(exported[feature], [frame.iloc[0][feature]] * 2)
+            for slug in models:
+                self.assertTrue(exported[f"prediction_{slug}"].eq(predictions.iloc[0][f"prediction_{slug}"]).all())
+                np.testing.assert_allclose(exported[f"score_{slug}"], [predictions.iloc[0][f"score_{slug}"]] * 2)
+
+    def test_history_deletion_targets_analysis_ids(self):
+        models, meta = load_bundle(ROOT)
+        frame = fixture().iloc[:1].copy()
+        predictions = predict_batches(models, frame)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "history.sqlite3"
+            self.assertEqual(delete_history(path=path), 0)
+            first = record_analysis(frame, predictions, meta["modele_recommande"], "test", path)
+            second = record_analysis(frame, predictions, meta["modele_recommande"], "test", path)
+            self.assertEqual(delete_history([], path), 0)
+            self.assertEqual(delete_history(["' OR 1=1 --"], path), 0)
+            self.assertEqual(len(read_history(path)), 2)
+            self.assertEqual(delete_history([second], path), 1)
+            self.assertEqual(read_history(path).id_analyse.tolist(), [first])
+            self.assertEqual(delete_history([second], path), 0)
+            self.assertEqual(delete_history(path=path), 1)
+            self.assertTrue(read_history(path).empty)
+            batch = latest_history_deletion(path)
+            self.assertEqual(batch[1], 1)
+            self.assertEqual(restore_history(batch[0], path), 1)
+            self.assertEqual(read_history(path).id_analyse.tolist(), [first])
+            self.assertEqual(restore_history(latest_history_deletion(path)[0], path), 1)
+            restored = read_history(path)
+            self.assertEqual(set(restored.id_analyse), {first, second})
+            self.assertIsNone(latest_history_deletion(path))
+            for feature in FEATURES:
+                np.testing.assert_allclose(restored[feature], [frame.iloc[0][feature]] * 2)
+
+    def test_streamlit_navigation_single_batch_and_history(self):
         from streamlit.testing.v1 import AppTest
+        directory = self.enterContext(tempfile.TemporaryDirectory())
+        history_path = Path(directory) / "history.sqlite3"
+        self.enterContext(patch("analysis_history.HISTORY_PATH", history_path))
         app = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
         self.assertFalse(app.exception)
-        app.radio(key="navigation").set_value("Analyser un CSV").run()
-        next(b for b in app.button if b.label == "Essayer les 600 lots de démonstration").click().run()
+        self.assertEqual(app.radio(key="navigation").options, ["Vue d’ensemble", "Lot individuel", "Historique"])
+        app.radio(key="performance_metric").set_value("Précision moyenne").run()
         self.assertFalse(app.exception)
         app.radio(key="navigation").set_value("Lot individuel").run()
+        self.assertEqual(len(app.number_input), 8)
+        self.assertNotIn("single_analysis", app.session_state)
         next(b for b in app.button if b.label == "Analyser ce lot").click().run()
         self.assertFalse(app.exception)
         self.assertEqual(len(app.metric), 3)
-        app.radio(key="navigation").set_value("Améliorer les modèles").run()
+        self.assertFalse(app.session_state["single_analysis"]["result"].iloc[0].prediction_svm)
+        self.assertTrue(any("Résultat final" in m.value and "Conforme" in m.value for m in app.markdown))
+
+        # A known alert must change the result; no hardcoded successful outcome.
+        saved = pd.read_csv(ROOT / "results/predictions_test.csv")
+        test = pd.read_csv(ROOT / "data/PharmaCheck_test_20.csv")
+        alert = test.loc[saved.prediction_svm.eq(1)].iloc[0]
+        app.text_input(key="batch_id").set_value("LOT-ALERTE")
+        for feature in FEATURES:
+            app.number_input(key=f"measure_{feature}").set_value(float(alert[feature]))
+        next(b for b in app.button if b.label == "Analyser ce lot").click().run()
         self.assertFalse(app.exception)
-        self.assertTrue(next(b for b in app.button if b.label == "Lancer la nouvelle expérience").disabled)
-        app.radio(key="navigation").set_value("Historique & exports").run()
+        self.assertTrue(app.session_state["single_analysis"]["result"].iloc[0].prediction_svm)
+        self.assertTrue(any("Résultat final" in m.value and "À examiner" in m.value for m in app.markdown))
+
+        # Invalid resubmission must clear the preceding successful analysis.
+        app.text_input(key="batch_id").set_value(" ")
+        next(b for b in app.button if b.label == "Analyser ce lot").click().run()
+        self.assertFalse(app.exception)
+        self.assertNotIn("single_analysis", app.session_state)
+        self.assertTrue(app.error)
+        app.radio(key="navigation").set_value("Historique").run()
+        self.assertFalse(app.exception)
+        self.assertEqual(len(app.table[0].value), 2)
+        self.assertEqual(len(read_history(history_path)), 2)
+        download = app.get("download_button")[0]
+        self.assertFalse(download.proto.disabled)
+        # A new browser session still sees the saved records, without duplicating them.
+        reloaded = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+        reloaded.radio(key="navigation").set_value("Historique").run()
+        self.assertFalse(reloaded.exception)
+        self.assertEqual(len(reloaded.table[0].value), 2)
+        # Both controls act on one click, and Undo restores the exact saved analyses.
+        original_ids = set(read_history(history_path).id_analyse)
+        app.button(key="clear_history").click().run()
+        self.assertFalse(app.exception)
+        self.assertTrue(read_history(history_path).empty)
+        self.assertTrue(app.get("download_button")[0].proto.disabled)
+        app.button(key="undo_history_delete").click().run()
+        self.assertEqual(set(read_history(history_path).id_analyse), original_ids)
+        target = read_history(history_path).iloc[0].id_analyse
+        app.selectbox(key="history_delete_selection").set_value(target).run()
+        app.button(key="delete_history_row").click().run()
+        self.assertFalse(app.exception)
+        self.assertEqual(len(read_history(history_path)), 1)
+        self.assertNotIn(target, read_history(history_path).id_analyse.tolist())
+        self.assertEqual(len(app.table[0].value), 1)
+        app.button(key="clear_history").click().run()
+        self.assertFalse(app.exception)
+        self.assertTrue(read_history(history_path).empty)
+        self.assertTrue(app.get("download_button")[0].proto.disabled)
+        # Recovery remains available after a full browser-session reload.
+        recovered = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+        recovered.radio(key="navigation").set_value("Historique").run()
+        recovered.button(key="undo_history_delete").click().run()
+        self.assertEqual(len(read_history(history_path)), 1)
+        recovered.button(key="undo_history_delete").click().run()
+        self.assertEqual(set(read_history(history_path).id_analyse), original_ids)
+        self.assertFalse(recovered.exception)
+        app.radio(key="navigation").set_value("Vue d’ensemble").run()
         self.assertFalse(app.exception)
 
 

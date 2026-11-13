@@ -1,0 +1,14 @@
+[theme]
+primaryColor = "#791BFF"
+backgroundColor = "#F8F5FF"
+secondaryBackgroundColor = "#EDE5FC"
+textColor = "#180C46"
+font = "sans serif"
+dataframeHeaderBackgroundColor = "#B9F3D0"
+
+[server]
+headless = true
+maxUploadSize = 20
+
+[browser]
+gatherUsageStats = false

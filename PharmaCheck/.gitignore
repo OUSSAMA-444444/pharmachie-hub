@@ -6,3 +6,9 @@ __pycache__/
 .cache/
 .pytest_cache/
 experiments/
+results/historique_lots.sqlite3*
+.bootstrap-venv/
+notebook_runs/
+.streamlit/secrets.toml
+*.sqlite3
+*.sqlite3-*

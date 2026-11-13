@@ -43,16 +43,36 @@ python -m streamlit run app.py
 Dans VS Code, sélectionner l'interpréteur `.venv`. Les Pipelines déjà ajustées sont incluses;
 aucun réentraînement n'est requis pour utiliser l'interface.
 
+## Notebook — import, entraînement et évaluation
+
+`PharmaCheck_workflow.ipynb` regroupe le chargement et le contrôle des données,
+les trois Pipelines, la recherche d'hyperparamètres, l'évaluation finale et les
+figures. Les fonctions d'entraînement et d'évaluation sont visibles dans les cellules.
+Conserver le notebook dans ce dossier avec les scripts et `data/`.
+
+```bash
+source .venv/bin/activate
+python -m pip install jupyterlab ipykernel
+python -m ipykernel install --user --name pharmacheck --display-name "PharmaCheck (Python 3.12)"
+python -m jupyterlab PharmaCheck_workflow.ipynb
+```
+
+Sélectionner le noyau **PharmaCheck (Python 3.12)**, puis **Run → Run All Cells**.
+La recherche complète est activée par défaut; elle peut prendre plusieurs minutes.
+Chaque exécution crée `notebook_runs/run_…/` pour ses modèles, résultats et figures,
+sans remplacer les modèles de l'application. `QUICK = True` active une recherche
+réduite, distincte du benchmark complet.
+
 ## Interface
 
-- **Vue d'ensemble** : scores CV de la version active et benchmark initial clairement séparés.
-- **Analyser un CSV** : nouveaux lots, alertes, scores, désaccords, filtres, exports et distributions.
-- **Lot individuel** : saisie des huit mesures et prédictions des trois modèles.
-- **Améliorer les modèles** : nouvelles données étiquetées, CV stratifiée et versions isolées.
-- **Historique & exports** : modèles actifs, expériences et téléchargement du projet.
+- **Vue d’ensemble** : indicateurs, comparaison interactive des scores CV, benchmark initial et composition de l’apprentissage.
+- **Lot individuel** : identifiant, trois mesures principales et cinq mesures complémentaires dans un volet dépliable. Le résultat suit le modèle recommandé en CV ; les trois prédictions et l’export CSV restent consultables.
 
-Le CSV doit être encodé en UTF-8. Virgule, point-virgule et tabulation sont détectés.
-Le séparateur décimal se choisit dans l'interface. Les huit colonnes numériques sont :
+- **Historique** : sauvegarde locale des analyses, résultats consultables, suppression immédiate d’une analyse sélectionnée ou de tout l’historique, avec annulation de la dernière suppression (disponible après rechargement), et téléchargement CSV complet (huit mesures, trois prédictions et scores, date UTC, résultat final et signature des modèles). Les analyses sont conservées après rechargement dans `results/historique_lots.sqlite3`, commun aux sessions de cette application.
+
+La navigation comporte ces trois pages, dans une interface violette inspirée des maquettes. Les huit champs sont préremplis avec les médianes de l’apprentissage ; remplacez-les par vos mesures réelles. « Conforme » indique une absence d’anomalie prédite, sans constituer une validation pharmaceutique.
+
+Les fonctions CSV restent disponibles dans les scripts Python. Le CSV doit être encodé en UTF-8 ; virgule, point-virgule et tabulation sont détectés. Les huit colonnes numériques sont :
 
 ```text
 force_compression_kN
@@ -174,7 +194,7 @@ de téléchargement. Le fichier doit réellement apparaître; un chemin écrit e
 ChatGPT Plus ne transforme pas un chemin du cloud en lien public de téléchargement.
 
 Dans une session proposant l'accès aux fichiers du workspace, télécharger `outputs/my-project.zip`.
-Dans un navigateur ayant accès à l'application, ouvrir **Historique & exports → Télécharger my-project.zip**.
+L’interface propose l’export CSV du résultat d’un lot. Pour obtenir le projet complet, utilisez l’archive du dépôt ou la fonction Python `ui_backend.zip_folder`.
 Si la session n'offre ni pièce jointe, ni sortie téléchargeable, ni accès aux fichiers, une copie
 publiée dans le dépôt GitHub choisi par l'utilisateur fournit un autre moyen de récupération.
 Un ZIP sur GitHub se télécharge depuis sa page avec **Download raw file**; pour tout le dépôt,

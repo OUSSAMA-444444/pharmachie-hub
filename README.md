@@ -1,23 +1,38 @@
-# PharmaCheck Studio
+# PharmaCheck · Qualité Intelligence
 
-Rebuilt pharmaceutical quality-anomaly classification project with Random Forest, XGBoost and a scaled RBF SVM, plus a professional purple Streamlit interface.
+Interface Streamlit de détection d’anomalies de qualité : **Vue d’ensemble**, **Lot individuel** et **Historique**.
 
-## Download the complete project
+[![Application checks](https://github.com/OUSSAMA-444444/pharmachie-hub/actions/workflows/streamlit.yml/badge.svg)](https://github.com/OUSSAMA-444444/pharmachie-hub/actions/workflows/streamlit.yml)
 
-[Download my-project.zip](./my-project.zip?raw=true)
+**Application :** [Ouvrir PharmaCheck](https://pharmachie-app-33wuv5wcwhaxuj9ylmp2lz.streamlit.app/)
 
-If GitHub opens a file page, click **Download raw file**. Extract the archive, open the `PharmaCheck` folder, and read `README.md`.
+- Interface violette avec logo, icônes et bannière communs aux trois pages.
+- Analyse des huit mesures d’un lot avec Random Forest, XGBoost et SVM.
+- Historique, export CSV complet, suppression d’une ligne ou de toutes les analyses, et annulation de la dernière suppression.
 
-### Windows
+## Déploiement connecté à GitHub
 
-Install Python 3.12, extract the archive and double-click `start_app.bat`.
+Dans Streamlit Community Cloud, connecter le compte GitHub, puis choisir :
 
-### macOS / Linux
+- **Repository :** `OUSSAMA-444444/pharmachie-hub`
+- **Branch :** `main`
+- **Main file path :** `PharmaCheck/app.py`
+- **Python :** `3.12` dans les paramètres avancés lors du déploiement.
+
+Community Cloud met automatiquement l’application à jour après les changements de la branche `main`. GitHub Actions exécute les tests et vérifie ensuite que l’application publique répond correctement. Le workflow peut aussi être lancé manuellement depuis l’onglet **Actions**.
+
+Le thème est défini dans `.streamlit/config.toml` à la racine du dépôt. Les dépendances sont épinglées dans `PharmaCheck/requirements.txt`.
+
+L’historique de cette application partagée est commun à ses utilisateurs. Le stockage local de Community Cloud peut être réinitialisé lors d’un redémarrage ou d’un redéploiement ; télécharger le CSV pour conserver les résultats.
+
+## Exécution locale
 
 ```bash
-bash start_app.sh
+cd PharmaCheck
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m streamlit run app.py
 ```
 
-The local interface opens at http://localhost:8501. The ZIP contains source code, configuration, original synthetic datasets, trained pipelines, results, figures, tests and a detailed French report.
-
-This is a fresh reconstruction from the original uploaded CSVs and conversation requirements. Results were rerun; it is not a byte-identical replacement of the lost archive. Synthetic academic results do not validate real pharmaceutical manufacturing use.
+Documentation du protocole et des limites : [PharmaCheck/README.md](PharmaCheck/README.md).
